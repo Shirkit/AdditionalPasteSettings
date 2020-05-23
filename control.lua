@@ -216,7 +216,9 @@ local assembly_to_logistic_chest = function (from, to, player)
 	if to.prototype.logistic_mode == "requester" or to.prototype.logistic_mode == "buffer" then
 		event_backup[from.position.x .. "-" .. from.position.y .. "-" .. to.position.x .. "-" .. to.position.y] = {gamer = player.index, stacks = {}}
 	elseif to.prototype.logistic_mode == "storage" then
-		to.storage_filter = game.item_prototypes[from.get_recipe().name]		
+		if from.get_recipe() ~= nil then
+			to.storage_filter = game.item_prototypes[from.get_recipe().name]		
+		end
 	end
 end
 
