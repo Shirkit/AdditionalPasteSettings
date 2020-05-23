@@ -69,4 +69,19 @@ data:extend({
 		default_value = false,
 		order = "a"
 	},
+	{
+		type = "bool-setting",
+		name = "additional-paste-settings-options-invert-buffer",
+		setting_type = 'runtime-per-user',
+		default_value = false,
+		order = "ea"
+	},
+	{
+		type = "double-setting",
+		name = "additional-paste-settings-options-invert-buffer-multiplier-value",
+		setting_type = 'runtime-per-user',
+		minimum_value = 0,
+		default_value = 1,
+		order = "eb"
+	},
 })

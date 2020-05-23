@@ -318,6 +318,11 @@ local function on_vanilla_paste(event)
 		local recipe = event.source.get_recipe()
 		local speed = event.source.crafting_speed
 		local additive = settings.get_player_settings(event.player_index)["additional-paste-settings-options-sumup"].value
+		local invertPaste = settings.get_player_settings(event.player_index)["additional-paste-settings-options-invert-buffer"].value and event.destination.prototype.logistic_mode == "buffer"
+		if invertPaste and event.destination.prototype.logistic_mode == "buffer" then
+			mtype = "additional-paste-settings-per-stack-size"
+			multiplier = settings.get_player_settings(event.player_index)["additional-paste-settings-options-invert-buffer-multiplier-value"].value
+		end
 		for i=1, #evt.stacks do
 			local prior = evt.stacks[i]
 			local post = event.destination.get_request_slot(i)
@@ -331,16 +336,31 @@ local function on_vanilla_paste(event)
 			end
 			
 			if post ~= nil then
-				if result[post.name] ~= nil then
-					result[post.name].count = update_stack(mtype, multiplier, post, result[post.name].count, recipe, speed, additive)
+				if invertPaste then
+					if result[post.name] ~= nil then
+						result[post.name].count = update_stack(mtype, -1 * multiplier, post, result[post.name].count, recipe, speed, additive)
+					else
+						result[post.name] = { name = post.name, count = 0 }
+					end
 				else
-					result[post.name] = { name = post.name, count = update_stack(mtype, multiplier, post, nil, recipe, speed, additive) }
+					if result[post.name] ~= nil then
+						result[post.name].count = update_stack(mtype, multiplier, post, result[post.name].count, recipe, speed, additive)
+					else
+						result[post.name] = { name = post.name, count = update_stack(mtype, multiplier, post, nil, recipe, speed, additive) }
+					end
 				end
+			end
+		end
+		if invertPaste then
+			if result[recipe.name] ~= nil then
+				result[recipe.name].count = update_stack(mtype, multiplier, result[recipe.name], result[recipe.name].count, recipe, speed, additive)
+			else
+				result[recipe.name] = { name = recipe.name, count = update_stack(mtype, multiplier, {name = recipe.name}, recipe, speed, additive) }
 			end
 		end
 		local i = 1
 		for k, v in pairs(result) do
-			if not v or not v.count then
+			if not v or not v.count or v.count == 0 then
 				-- Nothing to do here.
 			elseif i > event.destination.request_slot_count then
 				game.players[evt.gamer].print('Missing space in chest to paste requests')
@@ -348,6 +368,10 @@ local function on_vanilla_paste(event)
 				event.destination.set_request_slot(v, i)
 				i = i + 1
 			end
+		end
+		while i ~= event.destination.request_slot_count do
+			event.destination.clear_request_slot(i)
+			i = i + 1
 		end
 		event_backup[event.source.position.x .. "-" .. event.source.position.y .. "-" .. event.destination.position.x .. "-" .. event.destination.position.y] = nil
 	end
