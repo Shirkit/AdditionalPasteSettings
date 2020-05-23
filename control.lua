@@ -222,9 +222,13 @@ end
 
 local clear_requester_chest = function (from, to, player)
 
-	if from == to and (to.prototype.logistic_mode == "requester" or to.prototype.logistic_mode == "buffer") then
-		for i = 1, to.request_slot_count do
-			to.clear_request_slot(i)
+	if from == to then
+		if to.prototype.logistic_mode == "requester" or to.prototype.logistic_mode == "buffer" then
+			for i = 1, to.request_slot_count do
+				to.clear_request_slot(i)
+			end
+		elseif to.prototype.logistic_mode == "storage" then
+			to.storage_filter = nil
 		end
 	end	
 end
