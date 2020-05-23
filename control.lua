@@ -348,6 +348,12 @@ local function on_vanilla_paste(event)
 
 end
 
+local function on_gui_click_aps(event)
+	print_r("something")
+	print_r(event)
+	print_r(defines.gui_type.controller)
+end
+
 local function on_hotkey_pressed(event)
 
 	local player = game.players[event.player_index]
@@ -424,3 +430,9 @@ script.on_event("additional-paste-settings-hotkey", on_hotkey_pressed)
 
 script.on_event(defines.events.on_pre_entity_settings_pasted, on_vanilla_pre_paste)
 script.on_event(defines.events.on_entity_settings_pasted, on_vanilla_paste)
+
+--script.on_event(defines.events.on_gui_click, on_gui_click_aps)
+--script.on_event(defines.events.on_gui_opened, on_gui_click_aps)
+--script.on_event(defines.events.on_gui_value_changed, on_gui_click_aps)
+--script.on_event(defines.events.on_gui_confirmed, on_gui_click_aps)
+
