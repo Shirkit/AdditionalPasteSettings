@@ -125,7 +125,11 @@ local function update_stack(mtype, multiplier, stack, previous_value, recipe, sp
 		end
 		for i=1, #recipe.products do
 			if recipe.products[i].name == stack.name then
-				amount = recipe.products[i].amount
+				if recipe.products[i].amount then
+					amount = recipe.products[i].amount
+				else
+					amount = recipe.products[i].amount_max
+				end
 				break
 			end
 		end
@@ -144,7 +148,11 @@ local function update_stack(mtype, multiplier, stack, previous_value, recipe, sp
 		end
 		for i=1, #recipe.products do
 			if recipe.products[i].name == stack.name then
-				amount = recipe.products[i].amount
+				if recipe.products[i].amount then
+					amount = recipe.products[i].amount
+				else
+					amount = recipe.products[i].amount_max
+				end
 				break
 			end
 		end
