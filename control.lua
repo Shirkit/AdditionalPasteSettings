@@ -266,25 +266,27 @@ local assembly_to_constant_combinator = function(from, to, player)
 	local current = nil
 	local found = false
 	local ctrl = to.get_or_create_control_behavior()
-	for k=1, #recipe.ingredients do
-		current = recipe.ingredients[k]
-		found = false
-		for i=1, ctrl.signals_count do
-			local s = ctrl.get_signal(i)
-			if s.signal ~= nil and s.signal.name == current.name then
-				amount = update_stack(mtype, multiplier, {name=current.name}, s.count, recipe, from.crafting_speed, additive)
-				ctrl.set_signal(i, {signal={type=current.type,name=current.name}, count=amount})
-				found = true
-			end
-		end
-		
-		if not found then
+	if recipe then
+		for k=1, #recipe.ingredients do
+			current = recipe.ingredients[k]
+			found = false
 			for i=1, ctrl.signals_count do
 				local s = ctrl.get_signal(i)
-				if s.signal == nil then
-					amount = update_stack(mtype, multiplier, {name=current.name}, nil, recipe, from.crafting_speed, additive)
+				if s.signal ~= nil and s.signal.name == current.name then
+					amount = update_stack(mtype, multiplier, {name=current.name}, s.count, recipe, from.crafting_speed, additive)
 					ctrl.set_signal(i, {signal={type=current.type,name=current.name}, count=amount})
-					break
+					found = true
+				end
+			end
+			
+			if not found then
+				for i=1, ctrl.signals_count do
+					local s = ctrl.get_signal(i)
+					if s.signal == nil then
+						amount = update_stack(mtype, multiplier, {name=current.name}, nil, recipe, from.crafting_speed, additive)
+						ctrl.set_signal(i, {signal={type=current.type,name=current.name}, count=amount})
+						break
+					end
 				end
 			end
 		end
@@ -365,7 +367,7 @@ local function on_vanilla_paste(event)
 				end
 			end
 		end
-		if invertPaste then
+		if invertPaste and recipe then
 			if result[recipe.name] ~= nil then
 				result[recipe.name].count = update_stack(mtype, multiplier, result[recipe.name], result[recipe.name].count, recipe, speed, additive)
 			else
