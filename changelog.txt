@@ -1,15 +1,23 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.10.0
+Date: 29. 11. 2020
+  Changes:
+    - Updated information to state compatibility with 1.0
+  Bugfixes:
+    - Fixed crash when pasting on a requester chest and it's full
+    - Fixed crash when pasting on a constant combinator and the recipe had a fluid on it
+---------------------------------------------------------------------------------------------------
 Version: 0.9.0
 Date: 23. 5. 2020
   Features:
     - Added the ability to invert Buffer Chests behaviour. It can now paste products, instead of ingredients. Thanks for Murdersquish for suggesting
-	- Added ability to clear storage chests by clicking on itself, just like other chests
+	  - Added ability to clear storage chests by clicking on itself, just like other chests
   Bugfixes:
     - Fix when copying from a machine that has an empty recipe and pasting onto a storage logistic chest
-	- Fix for improper fluid handling. Thanks to @doktorstick for that
-	- Fix for improper rounding handling. Again, thanks to @doktorstick for that
-	- Fixed for when the recipe products amounts are not fixed, when it varies amounts it products
-	- Fixed for the 0.18.22 update on hotkey handling
+	  - Fix for improper fluid handling. Thanks to @doktorstick for that
+	  - Fix for improper rounding handling. Again, thanks to @doktorstick for that
+	  - Fixed for when the recipe products amounts are not fixed, when it varies amounts it products
+	  - Fixed for the 0.18.22 update on hotkey handling
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.1
 Date: 1. 2. 2020

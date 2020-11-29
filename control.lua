@@ -1,8 +1,8 @@
 -- DEBUG
-function print_r ( t , player)  
+function print_r ( t , player)
 	if player == nil then
 		player = game.players[1]
-	end	
+	end
     local print_r_cache={}
     local function sub_print_r(t,indent)
         if (print_r_cache[tostring(t)]) then
@@ -65,7 +65,7 @@ map_type_to_type = function ( from , to , action )
 	else
 		actions.type_type[from .. "!" .. to] = { action }
 	end
-	
+
 	return #actions.type_type[from .. "!" .. to]
 end
 
@@ -76,7 +76,7 @@ map_type_to_prototype = function ( from , to , action )
 	else
 		actions.type_prototype[from .. "!" .. to] = { action }
 	end
-	
+
 	return #actions.type_prototype[from .. "!" .. to]
 end
 
@@ -87,7 +87,7 @@ map_prototype_to_prototype = function ( from , to , action )
 	else
 		actions.prototype_prototype[from .. "!" .. to] = { action }
 	end
-	
+
 	return #actions.prototype_prototype[from .. "!" .. to]
 end
 
@@ -98,7 +98,7 @@ map_prototype_to_type = function ( from , to , action )
 	else
 		actions.prototype_type[from .. "!" .. to] = { action }
 	end
-	
+
 	return #actions.prototype_type[from .. "!" .. to]
 end
 
@@ -106,7 +106,7 @@ end
 
 local function update_stack(mtype, multiplier, stack, previous_value, recipe, speed, additive)
 	if not game.item_prototypes[stack.name] then
-		return nil
+		protos = game.fluid_prototypes
 	end
 
 	if mtype == "additional-paste-settings-per-stack-size" then
@@ -172,12 +172,12 @@ end
 local assembly_to_inserter = function (from, to, player)
 
 	local ctrl = to.get_or_create_control_behavior()
-	
+
 	local c1 = ctrl.get_circuit_network(defines.wire_type.red)
 	local c2 = ctrl.get_circuit_network(defines.wire_type.green)
-	
+
 	local fromRecipe = from.get_recipe()
-	
+
 	if fromRecipe == nil then
 		if c1 == nil and c2 == nil then
 			ctrl.logistic_condition = nil
@@ -189,7 +189,7 @@ local assembly_to_inserter = function (from, to, player)
 	else
 		local product = fromRecipe.products[1].name
 		local item = game.item_prototypes[product]
-		
+
 		if item ~= nil then
 			local multiplier = settings.get_player_settings(player)["additional-paste-settings-options-inserter-multiplier-value"].value
 			local mtype = settings.get_player_settings(player)["additional-paste-settings-options-inserter-multiplier-type"].value
@@ -214,7 +214,7 @@ local assembly_to_inserter = function (from, to, player)
 				end
 				ctrl.circuit_condition = {condition={comparator="<", first_signal={type="item", name=product}, constant=amount}}
 			end
-			
+
 		end
 	end
 end
@@ -225,7 +225,7 @@ local assembly_to_logistic_chest = function (from, to, player)
 		event_backup[from.position.x .. "-" .. from.position.y .. "-" .. to.position.x .. "-" .. to.position.y] = {gamer = player.index, stacks = {}}
 	elseif to.prototype.logistic_mode == "storage" then
 		if from.get_recipe() ~= nil then
-			to.storage_filter = game.item_prototypes[from.get_recipe().name]		
+			to.storage_filter = game.item_prototypes[from.get_recipe().name]
 		end
 	end
 end
@@ -240,7 +240,7 @@ local clear_requester_chest = function (from, to, player)
 		elseif to.prototype.logistic_mode == "storage" then
 			to.storage_filter = nil
 		end
-	end	
+	end
 end
 
 local clear_inserter_settings = function (from, to, player)
@@ -251,7 +251,7 @@ local clear_inserter_settings = function (from, to, player)
 		ctrl.circuit_condition = nil
 		ctrl.connect_to_logistic_network = false
 		ctrl.circuit_mode_of_operation = defines.control_behavior.inserter.circuit_mode_of_operation.none
-	end	
+	end
 end
 
 local assembly_to_constant_combinator = function(from, to, player)
@@ -262,7 +262,7 @@ local assembly_to_constant_combinator = function(from, to, player)
 	local recipe = from.get_recipe()
 	local amount = 0
 	local per_recipe_size = ("additional-paste-settings-per-recipe-size" == settings.get_player_settings(player)["additional-paste-settings-options-requester-multiplier-type"].value)
-	
+
 	local current = nil
 	local found = false
 	local ctrl = to.get_or_create_control_behavior()
@@ -278,7 +278,7 @@ local assembly_to_constant_combinator = function(from, to, player)
 					found = true
 				end
 			end
-			
+
 			if not found then
 				for i=1, ctrl.signals_count do
 					local s = ctrl.get_signal(i)
@@ -342,7 +342,7 @@ local function on_vanilla_paste(event)
 		for i=1, #evt.stacks do
 			local prior = evt.stacks[i]
 			local post = event.destination.get_request_slot(i)
-			
+
 			if prior ~= empty then
 				if result[prior.name] ~= nil then
 					result[prior.name].count = update_stack(mtype, multiplier, prior, result[prior.name].count, recipe, speed, additive)
@@ -350,7 +350,7 @@ local function on_vanilla_paste(event)
 					result[prior.name] = { name = prior.name, count = prior.count }
 				end
 			end
-			
+
 			if post ~= nil then
 				if invertPaste then
 					if result[post.name] ~= nil then
@@ -385,7 +385,7 @@ local function on_vanilla_paste(event)
 				i = i + 1
 			end
 		end
-		while i ~= event.destination.request_slot_count do
+		while i <= event.destination.request_slot_count do
 			event.destination.clear_request_slot(i)
 			i = i + 1
 		end
@@ -405,58 +405,58 @@ local function on_hotkey_pressed(event)
 	local player = game.players[event.player_index]
 
 	if player ~= nil and player.connected then
-	
+
 		local from = player.entity_copy_source
 		local to = player.selected
-		
+
 		if from ~= nil and to ~= nil then
-		
+
 			local key = from.type .. "!" .. to.type
 			local act = actions.type_type[key]
-			
+
 			if act ~= nil then
 				for i=1, #act do
 					act[i](from, to, player)
 				end
 			end
-			
+
 			key = from.type .. "!" .. to.prototype.name
 			act = actions.type_prototype[key]
-			
+
 			if act ~= nil then
 				for i=1, #act do
 					act[i](from, to, player)
 				end
 			end
-			
+
 			key = from.prototype.name .. "!" .. to.prototype.name
 			act = actions.prototype_prototype[key]
-			
+
 			if act ~= nil then
 				for i=1, #act do
 					act[i](from, to, player)
 				end
 			end
-			
+
 			key = from.prototype.name .. "!" .. to.type
 			act = actions.prototype_type[key]
-			
+
 			if act ~= nil then
 				for i=1, #act do
 					act[i](from, to, player)
 				end
 			end
-			
+
 			--player.print( "From: type=" .. from.type .. " prototype=" .. from.prototype.name .. " | To: type=" .. to.type .. " prototype=" .. to.prototype.name )
 		end
 	end
-	
+
 	if is_debug then
 		--player.print("Fired")
 		--print_r(actions, player)
 		--print_r(event)
 	end
-	
+
 end
 
 local function on_init()
@@ -481,4 +481,3 @@ script.on_event(defines.events.on_entity_settings_pasted, on_vanilla_paste)
 --script.on_event(defines.events.on_gui_opened, on_gui_click_aps)
 --script.on_event(defines.events.on_gui_value_changed, on_gui_click_aps)
 --script.on_event(defines.events.on_gui_confirmed, on_gui_click_aps)
-
