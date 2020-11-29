@@ -309,8 +309,13 @@ local function on_vanilla_pre_paste(event)
 
 	if event.source.type == "assembling-machine" and event.destination.type == "logistic-container" and (event.destination.prototype.logistic_mode == "requester" or event.destination.prototype.logistic_mode == "buffer") then
 		local evt = event_backup[event.source.position.x .. "-" .. event.source.position.y .. "-" .. event.destination.position.x .. "-" .. event.destination.position.y]
+		local range = event.destination.request_slot_count
+		if range == 0 then
+			range = 20
+		end
+
 		if evt ~= nil then
-			for i=1, event.destination.request_slot_count do
+			for i=1, range do
 				local j = event.destination.get_request_slot(i)
 				if j == nil then
 					evt.stacks[i] = empty

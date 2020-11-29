@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.10.1
+Date: 29. 11. 2020
+  Changes:
+    - Updated information to state compatibility with 1.1
+  Bugfixes:
+    - Fixed API change to just fix for now. Any recipes with more than 20 items will not get copied. A custom requester chest with less than 20 slots will likely result in a crash.
+---------------------------------------------------------------------------------------------------
 Version: 0.10.0
 Date: 29. 11. 2020
   Changes:
