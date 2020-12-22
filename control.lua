@@ -373,10 +373,12 @@ local function on_vanilla_paste(event)
 			end
 		end
 		if invertPaste and recipe then
-			if result[recipe.name] ~= nil then
-				result[recipe.name].count = update_stack(mtype, multiplier, result[recipe.name], result[recipe.name].count, recipe, speed, additive)
-			else
-				result[recipe.name] = { name = recipe.name, count = update_stack(mtype, multiplier, {name = recipe.name}, recipe, speed, additive) }
+			for k, product in pairs(recipe.products) do
+				if result[product.name] ~= nil then
+					result[product.name].count = update_stack(mtype, multiplier, result[product.name], result[product.name].count, recipe, speed, additive)
+				else
+					result[product.name] = { name = product.name, count = update_stack(mtype, multiplier, {name = product.name}, recipe, speed, additive) }
+				end
 			end
 		end
 		local i = 1
